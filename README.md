@@ -5,5 +5,7 @@ MapViewer for WGS84. GCJ, baidu coordinates
 
 ##Demo
 
+[Demo](https://brandonxiang.github.io/MapViewer/)
+
 #License
 [MIT](LICENSE)
