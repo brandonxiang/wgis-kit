@@ -21,8 +21,8 @@ import {
 import L from 'leaflet'
 
 var map = new L.Map("map", {
-  center: new L.LatLng(10.1, 125.6),
-  zoom: 7,
+  center: new L.LatLng(26.33280692289788, 114.78515624999999),
+  zoom: 10,
 });
 
 L.control
