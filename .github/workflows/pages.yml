@@ -24,8 +24,7 @@ jobs:
         run: |
           curl -L https://pnpm.js.org/pnpm.js | node - add --global pnpm@dev npm
       - name: pnpm install
-      - run: pnpm install
-      - run: npm run build
+        run: pnpm install && npm run build
 
       - name: GitHub Pages action
         uses: peaceiris/actions-gh-pages@v3
