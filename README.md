@@ -8,7 +8,7 @@ webgis 的工具集合
 
 ## Demo
 
-[Demo](https://brandonxiang.github.io/MapViewer/)
+[Demo](https://brandonxiang.github.io/wgis-kit/)
 
 ## License
 
