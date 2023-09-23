@@ -1,5 +1,15 @@
 # wgis-kit
 
+<p align="center">
+    <a href="https://github.com/brandonxiang/wgis-kit/blob/master/LICENSE">
+      <img src="https://img.shields.io/github/license/brandonxiang/wgis-kit" alt="license">
+    </a>
+    <a href="https://twitter.com/intent/follow?screen_name=xwpisme">
+        <img src="https://img.shields.io/twitter/follow/xwpisme?style=social&logo=twitter"
+            alt="follow on Twitter">
+    </a>
+</p>
+
 webgis 的工具集合
 
 ## 工具一 地图选点工具

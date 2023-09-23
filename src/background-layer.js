@@ -70,7 +70,9 @@ const tuba = new L.TileLayer(
 );
 const geoqBlue = new L.TileLayer(
   "http://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineStreetPurplishBlue/MapServer/tile/{z}/{y}/{x}",
-  {}
+  {
+    attribution: "点击地图任意处，获取百度和火星坐标"
+  }
 );
 const geoqCommunity = new L.TileLayer(
   "http://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineCommunity/MapServer/tile/{z}/{y}/{x}",
