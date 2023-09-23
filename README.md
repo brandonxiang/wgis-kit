@@ -1,6 +1,6 @@
 # wgis-kit
 
-<p align="center">
+<p align="left">
     <a href="https://github.com/brandonxiang/wgis-kit/blob/master/LICENSE">
       <img src="https://img.shields.io/github/license/brandonxiang/wgis-kit" alt="license">
     </a>
