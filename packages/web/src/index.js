@@ -18,11 +18,12 @@ import {
   esrisat,
   google,
 } from './background-layer'
-import L from 'leaflet'
+import { L } from './config'
+import { wgs84togcj02, gcj02tobd09 } from '@wgis/kit'
 
 var map = new L.Map("map", {
   center: new L.LatLng(26.33280692289788, 114.78515624999999),
-  zoom: 10,
+  zoom: 5,
 });
 
 L.control
@@ -61,8 +62,8 @@ map.on("click", function (e) {
     map.removeLayer(marker);
   }
   var latlng = e.latlng;
-  var gcj = coordtransform.wgs84togcj02(latlng.lng, latlng.lat);
-  var baidu = coordtransform.gcj02tobd09(gcj[0], gcj[1]);
+  var gcj = wgs84togcj02(latlng.lng, latlng.lat);
+  var baidu = gcj02tobd09(gcj[0], gcj[1]);
   var html = "";
   html +=
     "<p>谷歌地球: <strong>" + latlng.lat + "," + latlng.lng + "</strong></p>";
