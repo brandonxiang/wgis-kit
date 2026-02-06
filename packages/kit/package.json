@@ -1,16 +1,24 @@
 {
-    "name": "@wgis/kit",
-    "version": "1.0.0",
-    "type": "module",
-    "exports": {
-        "import": "./src/index.js",
-        "types": "./types/index.d.ts"
-    },
-    "types": "./types/index.d.ts",
-    "scripts": {
-        "tsd": "tsc --emitDeclarationOnly"
-    },
-    "devDependencies": {
-        "typescript": "^5.2.2"
-    }
+  "name": "@wgis/kit",
+  "version": "1.0.0",
+  "type": "module",
+  "exports": {
+    "import": "./src/index.js",
+    "types": "./types/index.d.ts"
+  },
+  "types": "./types/index.d.ts",
+  "scripts": {
+    "tsd": "tsc --emitDeclarationOnly",
+    "lint": "oxlint src/",
+    "format": "oxfmt src/",
+    "lint:fix": "oxlint src/ --fix",
+    "format:fix": "oxfmt src/ --write"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "shapefile": "^0.6.6",
+    "shp-write": "^0.3.2"
+  }
 }

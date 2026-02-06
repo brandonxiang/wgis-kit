@@ -5,10 +5,17 @@
   "main": "index.js",
   "scripts": {
     "dev": "pnpm --filter @wgis/web run dev",
-    "build": "pnpm --filter @wgis/web run build"
+    "build": "pnpm --filter @wgis/web run build",
+    "lint": "oxlint packages/",
+    "format": "oxfmt packages/",
+    "lint:fix": "oxlint packages/ --fix",
+    "format:fix": "oxfmt packages/ --write"
   },
   "keywords": [],
   "author": "",
-  "license": "MIT"
-
+  "license": "MIT",
+  "devDependencies": {
+    "oxfmt": "^0.28.0",
+    "oxlint": "^1.43.0"
+  }
 }
