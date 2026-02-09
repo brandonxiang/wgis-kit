@@ -8,6 +8,9 @@
   },
   "types": "./types/index.d.ts",
   "scripts": {
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "tsd": "tsc --emitDeclarationOnly",
     "lint": "oxlint src/",
     "format": "oxfmt src/",
@@ -15,7 +18,8 @@
     "format:fix": "oxfmt src/ --write"
   },
   "devDependencies": {
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
   },
   "dependencies": {
     "shapefile": "^0.6.6",
