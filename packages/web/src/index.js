@@ -21,6 +21,8 @@ import {
 import { L } from "./config";
 import { wgs84togcj02, gcj02tobd09 } from "@wgis/kit";
 import { createToolPanel } from "./components/tool-panel";
+import { addL7Layer } from "./l7-layer";
+import { createDrawTool } from "./draw-tool";
 
 var map = new L.Map("map", {
   center: new L.LatLng(26.33280692289788, 114.78515624999999),
@@ -30,8 +32,8 @@ var map = new L.Map("map", {
 L.control
   .layers(
     {
-      geoqBlue: geoqBlue.addTo(map),
-      高德影像: gaodesat,
+      geoqBlue: geoqBlue,
+      高德影像: gaodesat.addTo(map),
       esrisat: esrisat,
       MapQuest: mapquest1,
       谷歌影像: google,
@@ -53,5 +55,13 @@ L.control
     { position: "topleft" },
   )
   .addTo(map);
+
+// const l7Layers = addL7Layer(map);
+
+const drawTool = createDrawTool(map);
+drawTool.container.style.position = "absolute";
+drawTool.container.style.top = "100px";
+drawTool.container.style.right = "300px";
+document.getElementById("map").appendChild(drawTool.container);
 
 createToolPanel(map);

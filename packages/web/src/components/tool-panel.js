@@ -1,5 +1,5 @@
 import { L } from "../config";
-import { wgs84togcj02, gcj02tobd09 } from "@wgis/kit";
+import { wgs84togcj02, gcj02tobd09, readCadFile, getSupportedFormats } from "@wgis/kit";
 import { readShapefileFromFiles, downloadShapefile } from "@wgis/kit";
 
 export function createToolPanel(map) {
@@ -15,6 +15,7 @@ export function createToolPanel(map) {
         <div class="tool-tabs">
           <button class="tab-btn active" data-tab="geojson">GeoJSON</button>
           <button class="tab-btn" data-tab="shp">SHP</button>
+          <button class="tab-btn" data-tab="cad">CAD</button>
         </div>
         <div class="tab-content active" id="tab-geojson">
           <div class="file-drop-zone" id="geojson-drop-zone">
@@ -40,6 +41,29 @@ export function createToolPanel(map) {
             <label>.shx</label>
             <input type="file" id="shx-file" accept=".shx" />
             <span class="file-trigger" id="shx-name">选择文件 (可选)</span>
+          </div>
+        </div>
+        <div class="tab-content" id="tab-cad">
+          <div class="file-drop-zone" id="cad-drop-zone">
+            <div class="drop-icon">📐</div>
+            <div class="drop-text">点击或拖拽 CAD 文件</div>
+            <div class="drop-hint">支持 .dxf, .dwg</div>
+            <input type="file" id="cad-input" accept=".dxf,.dwg" />
+          </div>
+          <div class="file-name-display" id="cad-name">未选择文件</div>
+          <div class="cad-options" style="margin-top: 12px;">
+            <div class="coord-row">
+              <label>偏移X</label>
+              <input type="number" id="cad-offset-x" value="0" style="flex:1;padding:6px 8px;border:1px solid #ddd;border-radius:4px;font-size:12px;" />
+            </div>
+            <div class="coord-row">
+              <label>偏移Y</label>
+              <input type="number" id="cad-offset-y" value="0" style="flex:1;padding:6px 8px;border:1px solid #ddd;border-radius:4px;font-size:12px;" />
+            </div>
+            <div class="coord-row">
+              <label>缩放</label>
+              <input type="number" id="cad-scale" value="1" step="0.1" min="0.001" max="1000" style="flex:1;padding:6px 8px;border:1px solid #ddd;border-radius:4px;font-size:12px;" />
+            </div>
           </div>
         </div>
         <button class="tool-primary-btn" id="import-btn">导入到地图</button>
@@ -190,6 +214,60 @@ export function createToolPanel(map) {
     reader.readAsText(file, "utf-8");
   }
 
+  const cadInput = container.querySelector("#cad-input");
+  const cadDropZone = container.querySelector("#cad-drop-zone");
+  const cadName = container.querySelector("#cad-name");
+
+  cadDropZone.addEventListener("click", () => cadInput.click());
+  cadDropZone.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    cadDropZone.classList.add("drag-over");
+  });
+  cadDropZone.addEventListener("dragleave", () => {
+    cadDropZone.classList.remove("drag-over");
+  });
+  cadDropZone.addEventListener("drop", (e) => {
+    e.preventDefault();
+    cadDropZone.classList.remove("drag-over");
+    const file = e.dataTransfer.files[0];
+    if (file) handleCadFile(file);
+  });
+  cadInput.addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (file) handleCadFile(file);
+  });
+
+  function handleCadFile(file) {
+    const ext = file.name.split(".").pop().toLowerCase();
+    if (!getSupportedFormats().includes(ext)) {
+      showStatus("不支持的文件格式，仅支持 .dxf 和 .dwg", "error");
+      return;
+    }
+    cadName.textContent = file.name;
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        const offsetX = parseFloat(container.querySelector("#cad-offset-x").value) || 0;
+        const offsetY = parseFloat(container.querySelector("#cad-offset-y").value) || 0;
+        const scale = parseFloat(container.querySelector("#cad-scale").value) || 1;
+
+        const center = map.getCenter();
+        const result = await readCadFile(e.target.result, ext, {
+          offset: [center.lng + offsetX, center.lat + offsetY],
+          scale: scale
+        });
+
+        currentGeojson = result.geojson;
+        showStatus(`已加载 ${currentGeojson.features.length} 个要素 (${result.metadata.format.toUpperCase()})`, "success");
+        exportBtn.disabled = false;
+      } catch (err) {
+        console.error(err);
+        showStatus(`CAD加载失败: ${err.message}`, "error");
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  }
+
   shpName.addEventListener("click", () => shpInput.click());
   dbfName.addEventListener("click", () => dbfInput.click());
   shxName.addEventListener("click", () => shxInput.click());
@@ -213,7 +291,7 @@ export function createToolPanel(map) {
           showStatus("请先选择 GeoJSON 文件", "error");
           return;
         }
-      } else {
+      } else if (selectedTab === "shp") {
         const shpFile = shpInput.files[0];
         if (!shpFile) {
           showStatus("请选择 .shp 文件", "error");
@@ -222,6 +300,11 @@ export function createToolPanel(map) {
         const dbfFile = dbfInput.files[0];
         currentGeojson = await readShapefileFromFiles(shpFile, dbfFile);
         showStatus(`已加载 ${currentGeojson.features.length} 个要素`, "success");
+      } else if (selectedTab === "cad") {
+        if (!currentGeojson) {
+          showStatus("请先选择 CAD 文件", "error");
+          return;
+        }
       }
 
       if (currentLayer) map.removeLayer(currentLayer);
