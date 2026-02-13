@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>wgis-l7 - AntV L7 Map Application</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      padding: 0;
+      margin: 0;
+    }
+
+    html, body, #map-container {
+      height: 100%;
+      width: 100%;
+    }
+
+    #map-container {
+      position: relative;
+    }
+
+    .map-control {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 1000;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+      padding: 12px;
+      min-width: 200px;
+    }
+
+    .map-control-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .map-select {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 13px;
+      background: white;
+      cursor: pointer;
+    }
+
+    .map-select:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .coord-panel {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+      padding: 10px 20px;
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 12px;
+      color: #333;
+    }
+
+    .coord-value {
+      color: #667eea;
+      font-weight: 500;
+    }
+
+    .tool-panel {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 280px;
+      height: 100%;
+      background: white;
+      box-shadow: -4px 0 20px rgba(0,0,0,0.1);
+      z-index: 1000;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 13px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .tool-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 16px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      font-weight: 600;
+    }
+
+    .tool-toggle-btn {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+
+    .tool-toggle-btn:hover {
+      background: rgba(255,255,255,0.3);
+    }
+
+    .tool-content {
+      padding: 16px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .tool-section {
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .tool-section:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    .section-title {
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 12px;
+      font-size: 13px;
+    }
+
+    .layer-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .layer-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: #f5f5f5;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .layer-item:hover {
+      background: #eee;
+    }
+
+    .layer-item.active {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .layer-checkbox {
+      width: 18px;
+      height: 18px;
+      accent-color: #667eea;
+    }
+
+    .layer-name {
+      flex: 1;
+      font-size: 13px;
+    }
+
+    .status-bar {
+      padding: 10px 16px;
+      background: #f8f8f8;
+      border-top: 1px solid #eee;
+      font-size: 11px;
+      color: #666;
+    }
+
+    .status-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+
+    .status-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .status-label {
+      color: #999;
+    }
+
+    .status-value {
+      color: #333;
+      font-weight: 500;
+    }
+
+    .status-value.success {
+      color: #2e7d32;
+    }
+
+    .map-legend {
+      margin-top: 12px;
+      padding: 10px;
+      background: #f8f8f8;
+      border-radius: 6px;
+      font-size: 11px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .legend-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .legend-color {
+      width: 16px;
+      height: 16px;
+      border-radius: 3px;
+    }
+
+    .info-box {
+      padding: 10px 12px;
+      background: #e3f2fd;
+      border-radius: 6px;
+      font-size: 11px;
+      color: #1565c0;
+      margin-top: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div id="map-container">
+    <div id="map"></div>
+    
+    <div class="map-control">
+      <div class="map-control-title">切换底图 / Base Map</div>
+      <select id="map-selector" class="map-select">
+        <option value="gaode">高德地图 (Gaode)</option>
+        <option value="tianditu">天地图 (Tianditu)</option>
+        <option value="tencent">腾讯地图 (Tencent)</option>
+        <option value="mapbox">MapBox</option>
+        <option value="maplibre">MapLibre</option>
+      </select>
+    </div>
+    
+    <div class="coord-panel">
+      经度: <span id="lng" class="coord-value">-</span> | 
+      纬度: <span id="lat" class="coord-value">-</span> | 
+      层级: <span id="zoom" class="coord-value">-</span>
+    </div>
+    
+    <div class="tool-panel" id="tool-panel">
+      <div class="tool-header">
+        <span>图层控制 / Layers</span>
+        <button class="tool-toggle-btn" id="panel-toggle">×</button>
+      </div>
+      <div class="tool-content">
+        <div class="tool-section">
+          <div class="section-title">示例图层 / Sample Layers</div>
+          <div class="layer-list">
+            <label class="layer-item" id="layer-points">
+              <input type="checkbox" class="layer-checkbox" data-layer="points">
+              <span class="layer-name">示例点图层</span>
+            </label>
+            <label class="layer-item" id="layer-lines">
+              <input type="checkbox" class="layer-checkbox" data-layer="lines">
+              <span class="layer-name">示例线图层</span>
+            </label>
+            <label class="layer-item" id="layer-polygons">
+              <input type="checkbox" class="layer-checkbox" data-layer="polygons">
+              <span class="layer-name">示例面图层</span>
+            </label>
+          </div>
+          <div class="map-legend">
+            <div class="legend-item">
+              <div class="legend-color" style="background: #ff6b6b;"></div>
+              <span>点图层 (Points)</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background: #4ecdc4;"></div>
+              <span>线图层 (Lines)</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background: #45b7d1;"></div>
+              <span>面图层 (Polygons)</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="tool-section">
+          <div class="section-title">底图信息 / Map Info</div>
+          <div class="info-box" id="map-info">
+            当前底图: 高德地图<br>
+            请配置 API Key
+          </div>
+        </div>
+        
+        <div class="tool-section">
+          <div class="section-title">操作说明</div>
+          <div style="font-size: 11px; color: #666; line-height: 1.6;">
+            • 鼠标滚轮缩放地图<br>
+            • 右键拖拽平移地图<br>
+            • 左键点击查看坐标<br>
+            • 使用右上方面板切换底图和图层
+          </div>
+        </div>
+      </div>
+      <div class="status-bar">
+        <div class="status-item">
+          <span class="status-label">地图状态</span>
+          <span class="status-value success" id="map-status">已加载</span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">底图类型</span>
+          <span class="status-value" id="current-map">高德地图</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

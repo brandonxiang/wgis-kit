@@ -1,0 +1,22 @@
+{
+  "name": "@wgis/web-l7",
+  "private": true,
+  "version": "1.0.0",
+  "description": "AntV L7 WebGIS application with base map switching",
+  "main": "src/main.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@antv/l7": "^2.23.2",
+    "@antv/l7-map": "^2.23.2"
+  },
+  "devDependencies": {
+    "vite": "^5.4.0"
+  }
+}
