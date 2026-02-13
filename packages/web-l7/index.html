@@ -23,15 +23,7 @@
     }
 
     .map-control {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      z-index: 1000;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
-      padding: 12px;
-      min-width: 200px;
+      display: none;
     }
 
     .map-control-title {
@@ -307,7 +299,7 @@
         <div class="tool-section">
           <div class="section-title">底图信息 / Map Info</div>
           <div class="info-box" id="map-info">
-            当前底图: 高德地图<br>
+            当前底图: 腾讯地图<br>
             请配置 API Key
           </div>
         </div>
@@ -329,11 +321,11 @@
         </div>
         <div class="status-item">
           <span class="status-label">底图类型</span>
-          <span class="status-value" id="current-map">高德地图</span>
+          <span class="status-value" id="current-map">腾讯地图</span>
         </div>
       </div>
     </div>
   </div>
-  <script type="module" src="./src/main.js"></script>
+  <script type="module" src="./src/main.ts"></script>
 </body>
 </html>

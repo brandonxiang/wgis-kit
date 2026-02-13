@@ -1,8 +1,8 @@
 /** @type { import("vite").UserConfig} */
 export default {
-  base: './',
+  base: "./",
   server: {
-    port: 3001,
-    open: true
-  }
-}
+    port: 3000,
+    open: true,
+  },
+};
