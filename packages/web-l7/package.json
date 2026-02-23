@@ -14,7 +14,8 @@
   "license": "MIT",
   "dependencies": {
     "@antv/l7": "^2.23.2",
-    "@antv/l7-maps": "^2.23.2"
+    "@antv/l7-maps": "^2.23.2",
+    "@wgis/kit": "workspace:^"
   },
   "devDependencies": {
     "typescript": "^5.3.0",
