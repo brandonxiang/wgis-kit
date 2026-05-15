@@ -8,18 +8,19 @@
   },
   "types": "./types/index.d.ts",
   "scripts": {
-    "test": "vitest",
-    "test:run": "vitest run",
-    "test:coverage": "vitest run --coverage",
+    "test": "vp test",
+    "test:run": "vp test run",
+    "test:coverage": "vp test run --coverage",
     "tsd": "tsc --emitDeclarationOnly",
-    "lint": "oxlint src/",
-    "format": "oxfmt src/",
-    "lint:fix": "oxlint src/ --fix",
-    "format:fix": "oxfmt src/ --write"
+    "lint": "vp lint src/",
+    "format": "vp fmt src/",
+    "lint:fix": "vp lint src/ --fix",
+    "format:fix": "vp fmt src/ --write"
   },
   "devDependencies": {
     "typescript": "^5.9.3",
-    "vitest": "^4.0.18"
+    "vitest": "catalog:",
+    "vite-plus": "catalog:"
   },
   "dependencies": {
     "dxf": "^5.3.1",

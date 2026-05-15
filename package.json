@@ -6,16 +6,17 @@
   "scripts": {
     "dev": "pnpm --filter @wgis/web run dev",
     "build": "pnpm --filter @wgis/web run build",
-    "lint": "oxlint packages/",
-    "format": "oxfmt packages/",
-    "lint:fix": "oxlint packages/ --fix",
-    "format:fix": "oxfmt packages/ --write"
+    "lint": "vp lint packages/",
+    "format": "vp fmt packages/",
+    "lint:fix": "vp lint packages/ --fix",
+    "format:fix": "vp fmt packages/ --write",
+    "prepare": "vp config"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "oxfmt": "^0.28.0",
-    "oxlint": "^1.43.0"
-  }
+    "vite-plus": "catalog:"
+  },
+  "packageManager": "pnpm@11.1.2"
 }
