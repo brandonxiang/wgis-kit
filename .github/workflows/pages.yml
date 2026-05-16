@@ -2,6 +2,9 @@ name: github-pages
 
 on: push
 
+permissions:
+  contents: write
+
 jobs:
   pages:
     runs-on: ubuntu-latest
@@ -10,7 +13,7 @@ jobs:
 
       - uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: 11.1.2
 
       - uses: actions/setup-node@v4
         with:
@@ -18,7 +21,10 @@ jobs:
           cache: pnpm
 
       - name: Install dependencies
-        run: pnpm install && npm run build
+        run: pnpm install --frozen-lockfile --prod=false
+
+      - name: Build
+        run: pnpm build
 
       - name: GitHub Pages action
         uses: peaceiris/actions-gh-pages@v3
