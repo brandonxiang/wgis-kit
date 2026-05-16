@@ -12,7 +12,7 @@ jobs:
           version: 11.1.2
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: "24.x"
           cache: pnpm
       - run: pnpm install --frozen-lockfile --prod=false
       - run: pnpm --filter @wgis/kit test:run
