@@ -1,34 +1,34 @@
-import { L } from './config'
-import { L7Layer } from '@antv/l7-leaflet'
-import { DrawCircle, DrawLine, DrawPoint, DrawPolygon, DrawRect } from '@antv/l7-draw'
+import { L } from "./config"
+import { L7Layer } from "@antv/l7-leaflet"
+import { DrawCircle, DrawEvent, DrawLine, DrawPoint, DrawPolygon, DrawRect } from "@antv/l7-draw"
 
 let drawInstance = null
 
 export function createDrawTool(map, options = {}) {
   const defaultOptions = {
-    position: 'topright',
+    position: "topright",
     drawStyles: {
       point: {
-        fill: '#ff6b6b',
-        stroke: '#fff',
-        radius: 8
+        fill: "#ff6b6b",
+        stroke: "#fff",
+        radius: 8,
       },
       line: {
-        stroke: '#4ecdc4',
-        lineWidth: 3
+        stroke: "#4ecdc4",
+        lineWidth: 3,
       },
       polygon: {
-        fill: '#45b7d1',
+        fill: "#45b7d1",
         fillOpacity: 0.3,
-        stroke: '#45b7d1',
-        lineWidth: 2
-      }
-    }
+        stroke: "#45b7d1",
+        lineWidth: 2,
+      },
+    },
   }
 
   const config = { ...defaultOptions, ...options }
 
-  const container = L.DomUtil.create('div', 'draw-control')
+  const container = L.DomUtil.create("div", "draw-control")
   container.innerHTML = `
     <div class="draw-buttons">
       <button class="draw-btn" data-mode="point" title="绘制点">
@@ -94,17 +94,18 @@ export function createDrawTool(map, options = {}) {
   const scene = l7Layer.getScene()
 
   let currentMode = null
-  const drawnLayers = []
+  const drawInstances = []
+  const changeListeners = new Set()
 
-  container.querySelectorAll('.draw-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
+  container.querySelectorAll(".draw-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
       const mode = btn.dataset.mode
       handleDrawMode(mode, scene, btn)
     })
   })
 
   function handleDrawMode(mode, scene, btn) {
-    container.querySelectorAll('.draw-btn').forEach(b => b.classList.remove('active'))
+    container.querySelectorAll(".draw-btn").forEach((b) => b.classList.remove("active"))
 
     if (currentMode === mode) {
       if (drawInstance) {
@@ -116,12 +117,12 @@ export function createDrawTool(map, options = {}) {
     }
 
     currentMode = mode
-    btn.classList.add('active')
+    btn.classList.add("active")
 
-    if (mode === 'delete') {
+    if (mode === "delete") {
       clearAllFeatures()
       currentMode = null
-      btn.classList.remove('active')
+      btn.classList.remove("active")
       return
     }
 
@@ -136,19 +137,19 @@ export function createDrawTool(map, options = {}) {
 
     let DrawClass
     switch (mode) {
-      case 'point':
+      case "point":
         DrawClass = DrawPoint
         break
-      case 'line':
+      case "line":
         DrawClass = DrawLine
         break
-      case 'polygon':
+      case "polygon":
         DrawClass = DrawPolygon
         break
-      case 'rect':
+      case "rect":
         DrawClass = DrawRect
         break
-      case 'circle':
+      case "circle":
         DrawClass = DrawCircle
         break
       default:
@@ -156,14 +157,13 @@ export function createDrawTool(map, options = {}) {
     }
 
     drawInstance = new DrawClass(scene, {
-      style: config.drawStyles[mode] || {}
+      style: config.drawStyles[mode] || {},
     })
+    drawInstances.push(drawInstance)
 
     drawInstance.enable()
 
-    drawInstance.on('drawend', (e) => {
-      drawnLayers.push(e.target)
-    })
+    bindDrawChangeEvents(drawInstance)
   }
 
   function clearAllFeatures() {
@@ -172,47 +172,52 @@ export function createDrawTool(map, options = {}) {
       drawInstance = null
     }
 
-    drawnLayers.forEach(layer => {
-      if (layer.remove) {
-        layer.remove()
-      }
+    drawInstances.forEach((instance) => {
+      instance.setData([])
+      instance.destroy?.()
     })
-    drawnLayers.length = 0
+    drawInstances.length = 0
     currentMode = null
+    notifyChange()
   }
 
   function getDrawnData() {
-    return drawnLayers.map(layer => {
-      if (layer.getSource && layer.getSource().getData) {
-        return layer.getSource().getData()
-      }
-      return null
-    }).filter(Boolean)
+    return drawInstances.map((instance) => instance.getData()).filter((data) => data.length)
   }
 
   function exportToGeoJSON() {
-    const features = []
-
-    drawnLayers.forEach(layer => {
-      if (layer.getSource && layer.getSource().getData) {
-        const data = layer.getSource().getData()
-        if (data && data.features) {
-          features.push(...data.features)
-        }
-      }
-    })
+    const features = drawInstances.flatMap((instance) => instance.getData())
 
     return {
-      type: 'FeatureCollection',
-      features: features
+      type: "FeatureCollection",
+      features: features,
     }
+  }
+
+  function bindDrawChangeEvents(instance) {
+    ;[DrawEvent.Add, DrawEvent.Edit, DrawEvent.Remove, DrawEvent.Clear, DrawEvent.Change].forEach(
+      (eventName) => {
+        instance.on(eventName, notifyChange)
+      },
+    )
+  }
+
+  function notifyChange() {
+    const geojson = exportToGeoJSON()
+    changeListeners.forEach((listener) => listener(geojson))
+  }
+
+  function onChange(listener) {
+    changeListeners.add(listener)
+    return () => changeListeners.delete(listener)
   }
 
   return {
     container,
     getDrawnData,
     exportToGeoJSON,
-    clearAllFeatures
+    onChange,
+    clearAllFeatures,
   }
 }
 
