@@ -97,7 +97,7 @@ export function createDrawTool(map, options = {}) {
   const drawnLayers = []
 
   container.querySelectorAll('.draw-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
+    btn.addEventListener('click', () => {
       const mode = btn.dataset.mode
       handleDrawMode(mode, scene, btn)
     })

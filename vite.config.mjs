@@ -54,9 +54,12 @@ export default defineConfig({
       },
     },
     env: {
+      browser: true,
       builtin: true,
     },
-    globals: {},
+    globals: {
+      defineProps: 'readonly',
+    },
     options: {
       typeAware: false,
       typeCheck: false,

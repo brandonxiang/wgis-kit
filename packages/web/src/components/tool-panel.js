@@ -188,11 +188,15 @@ export function createToolPanel(map) {
     e.preventDefault();
     geojsonDropZone.classList.remove("drag-over");
     const file = e.dataTransfer.files[0];
-    if (file) handleGeojsonFile(file);
+    if (file) {
+      handleGeojsonFile(file);
+    }
   });
   geojsonInput.addEventListener("change", (e) => {
     const file = e.target.files[0];
-    if (file) handleGeojsonFile(file);
+    if (file) {
+      handleGeojsonFile(file);
+    }
   });
 
   function handleGeojsonFile(file) {
@@ -207,7 +211,7 @@ export function createToolPanel(map) {
         currentGeojson = JSON.parse(e.target.result);
         showStatus(`已加载 ${currentGeojson.features?.length || 0} 个要素`, "success");
         exportBtn.disabled = false;
-      } catch (err) {
+      } catch {
         showStatus("文件解析失败", "error");
       }
     };
@@ -230,11 +234,15 @@ export function createToolPanel(map) {
     e.preventDefault();
     cadDropZone.classList.remove("drag-over");
     const file = e.dataTransfer.files[0];
-    if (file) handleCadFile(file);
+    if (file) {
+      handleCadFile(file);
+    }
   });
   cadInput.addEventListener("change", (e) => {
     const file = e.target.files[0];
-    if (file) handleCadFile(file);
+    if (file) {
+      handleCadFile(file);
+    }
   });
 
   function handleCadFile(file) {
@@ -307,7 +315,9 @@ export function createToolPanel(map) {
         }
       }
 
-      if (currentLayer) map.removeLayer(currentLayer);
+      if (currentLayer) {
+        map.removeLayer(currentLayer);
+      }
 
       currentLayer = L.geoJSON(currentGeojson, {
         style: {
@@ -335,7 +345,9 @@ export function createToolPanel(map) {
       }).addTo(map);
 
       const bounds = currentLayer.getBounds();
-      if (bounds.isValid()) map.fitBounds(bounds);
+      if (bounds.isValid()) {
+        map.fitBounds(bounds);
+      }
 
       showStatus(`已导入 ${currentGeojson.features.length} 个要素`, "success");
     } catch (err) {

@@ -1,4 +1,3 @@
-import { L } from './config'
 import { L7Layer } from '@antv/l7-leaflet'
 import { PointLayer, LineLayer, PolygonLayer } from '@antv/l7'
 

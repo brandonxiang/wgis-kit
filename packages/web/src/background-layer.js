@@ -1,5 +1,138 @@
 import { L } from "./config";
 
+const tileLayerConfigs = [
+  {
+    key: "geoqBlue",
+    label: "GeoQ Blue",
+    urlTemplate:
+      "http://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineStreetPurplishBlue/MapServer/tile/{z}/{y}/{x}",
+    options: {
+      attribution: "点击地图任意处，获取百度和火星坐标",
+    },
+  },
+  {
+    key: "gaodesat",
+    label: "高德影像",
+    urlTemplate: "http://webst0{s}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}",
+    options: {
+      subdomains: "1234",
+    },
+  },
+  {
+    key: "esrisat",
+    label: "Esri 影像",
+    urlTemplate:
+      "http://server.arcgisonline.com/arcgis/rest/services/world_imagery/mapserver/tile/{z}/{y}/{x}",
+    options: {},
+  },
+  {
+    key: "google",
+    label: "谷歌影像",
+    urlTemplate: "http://khm0.googleapis.com/kh?v=203&hl=zh-CN&&x={x}&y={y}&z={z}",
+    options: {},
+  },
+  {
+    key: "osm",
+    label: "OpenStreetMap",
+    urlTemplate: "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    options: {},
+  },
+  {
+    key: "mapquest1",
+    label: "MapQuest Vivid",
+    urlTemplate: "https://{s}.tiles.mapquest.com/render/latest/vivid/{z}/{x}/{y}/256/png",
+    options: {
+      subdomains: "abc",
+    },
+  },
+  {
+    key: "mapbox",
+    label: "Mapbox",
+    urlTemplate:
+      "https://a.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoidGF0aWFuYSIsImEiOiJjaW9nNWc2enkwMWk0dWRtM3Qwd3J5dHo2In0.42pdJNpJD8BAalQ3nM8KQg",
+    options: {
+      id: "mapbox.Street",
+    },
+  },
+  {
+    key: "mapquest",
+    label: "MapQuest",
+    urlTemplate: "http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png",
+    options: {
+      subdomains: "1234",
+    },
+  },
+  {
+    key: "tuba",
+    label: "图吧",
+    urlTemplate: "http://emap{s}.mapabc.com/mapabc/maptile?&x={x}&y={y}&z={z}",
+    options: {
+      subdomains: "0123",
+    },
+  },
+  {
+    key: "geoqCommunity",
+    label: "GeoQ Community",
+    urlTemplate:
+      "http://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineCommunity/MapServer/tile/{z}/{y}/{x}",
+    options: {},
+  },
+  {
+    key: "geoqGray",
+    label: "GeoQ Gray",
+    urlTemplate:
+      "http://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineStreetGray/MapServer/tile/{z}/{y}/{x}",
+    options: {},
+  },
+  {
+    key: "geoColor",
+    label: "GeoQ Color",
+    urlTemplate:
+      "http://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineStreetColor/MapServer/tile/{z}/{y}/{x}",
+    options: {},
+  },
+  {
+    key: "geoqWarm",
+    label: "GeoQ Warm",
+    urlTemplate:
+      "http://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineStreetWarm/MapServer/tile/{z}/{y}/{x}",
+    options: {},
+  },
+  {
+    key: "geoqBound",
+    label: "GeoQ Boundary",
+    urlTemplate:
+      "http://thematic.geoq.cn/arcgis/rest/services/ThematicMaps/administrative_division_boundaryandlabel/MapServer/tile/{z}/{y}/{x}",
+    options: {},
+  },
+  {
+    key: "geoqBoundonly",
+    label: "GeoQ Boundary Only",
+    urlTemplate:
+      "http://thematic.geoq.cn/arcgis/rest/services/ThematicMaps/administrative_division_boundary/MapServer/tile/{z}/{y}/{x}",
+    options: {},
+  },
+  {
+    key: "geoqWater",
+    label: "GeoQ Water",
+    urlTemplate:
+      "http://thematic.geoq.cn/arcgis/rest/services/ThematicMaps/WorldHydroMap/MapServer/tile/{z}/{y}/{x}",
+    options: {},
+  },
+  {
+    key: "StamenToner",
+    label: "Stamen Toner",
+    urlTemplate: "http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png",
+    options: {},
+  },
+  {
+    key: "StamenWaterColor",
+    label: "Stamen Watercolor",
+    urlTemplate: "http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.png",
+    options: {},
+  },
+];
+
 const mapbox = new L.TileLayer(
   "https://a.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoidGF0aWFuYSIsImEiOiJjaW9nNWc2enkwMWk0dWRtM3Qwd3J5dHo2In0.42pdJNpJD8BAalQ3nM8KQg",
   {
@@ -113,6 +246,7 @@ const google = new L.TileLayer(
 );
 
 export {
+  tileLayerConfigs,
   mapbox,
   osm,
   mapquest,

@@ -1,16 +1,7 @@
-import { viteStaticCopy } from 'vite-plugin-static-copy'
+import vue from '@vitejs/plugin-vue'
 
 /** @type { import("vite").UserConfig} */
 export default {
   base: './',
-  plugins: [
-    viteStaticCopy({
-      targets: [
-        {
-          src: 'lib',
-          dest: ''
-        }
-      ]
-    })
-  ],
+  plugins: [vue()],
 }

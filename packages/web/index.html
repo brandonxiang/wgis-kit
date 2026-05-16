@@ -4,13 +4,6 @@
   <meta charset="UTF-8">
   <title>wgis - WebGIS Toolkit</title>
   <link rel="icon" type="image/x-icon" href="/favicon.jpg">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
-  integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
-  crossorigin=""/>
-  <script defer src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
-  integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
-  crossorigin=""></script>
-  <script defer src="./lib/coordtransform.js" type="text/javascript"></script>
 
   <style>
     * {
@@ -22,7 +15,7 @@
       margin: 0;
     }
 
-    html, body, #map {
+    html, body, #app, #map {
       height: 100%;
     }
 
@@ -365,7 +358,7 @@
   </style>
 </head>
 <body>
-<div id="map"></div>
+<div id="app"></div>
 <script src="./src/index.js" type="module"></script>
 </body>
 </html>

@@ -1,3 +1,3 @@
-const L = window.L;
+import L from "leaflet";
 
 export { L };
