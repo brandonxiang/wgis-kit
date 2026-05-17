@@ -81,6 +81,26 @@
         display: none;
       }
 
+      .tool-group {
+        margin-bottom: 18px;
+        padding: 12px;
+        background: #fafafa;
+        border: 1px solid #ececec;
+        border-radius: 10px;
+      }
+
+      .tool-group:last-of-type {
+        margin-bottom: 0;
+      }
+
+      .tool-group-title {
+        margin-bottom: 12px;
+        color: #4f46e5;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+      }
+
       .tool-section {
         margin-bottom: 16px;
         padding-bottom: 16px;
@@ -267,6 +287,46 @@
       .tool-secondary-btn:disabled {
         opacity: 0.5;
         cursor: not-allowed;
+      }
+
+      .analysis-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 6px;
+        margin-bottom: 10px;
+      }
+
+      .analysis-grid div {
+        min-width: 0;
+        padding: 8px 4px;
+        background: #fff;
+        border: 1px solid #ececec;
+        border-radius: 6px;
+        text-align: center;
+      }
+
+      .analysis-grid span {
+        display: block;
+        color: #777;
+        font-size: 10px;
+      }
+
+      .analysis-grid strong {
+        display: block;
+        margin-top: 2px;
+        color: #222;
+        font-size: 15px;
+      }
+
+      .analysis-output {
+        padding: 9px 10px;
+        background: #fff;
+        border: 1px solid #ececec;
+        border-radius: 6px;
+        color: #444;
+        font-size: 11px;
+        line-height: 1.6;
+        word-break: break-word;
       }
 
       .export-options {
