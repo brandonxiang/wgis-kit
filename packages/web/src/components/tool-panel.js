@@ -10,6 +10,9 @@ import {
   drawCircle,
   simplify,
   destinationPoint,
+  getLightweightFormats,
+  readLightweightGeojson,
+  writeLightweightGeojson,
 } from "@wgis/kit"
 import { readShapefileFromFiles, downloadShapefile } from "@wgis/kit"
 import { area, centroid } from "@wgis/kit"
@@ -28,6 +31,7 @@ export function createToolPanel(map, options = {}) {
           <div class="tool-section-title">📁 文件导入</div>
           <div class="tool-tabs">
             <button class="tab-btn active" data-tab="geojson">GeoJSON</button>
+            <button class="tab-btn" data-tab="light">轻量</button>
             <button class="tab-btn" data-tab="shp">SHP</button>
             <button class="tab-btn" data-tab="cad">CAD</button>
           </div>
@@ -39,6 +43,15 @@ export function createToolPanel(map, options = {}) {
               <input type="file" id="geojson-input" accept=".json,.geojson" />
             </div>
             <div class="file-name-display" id="geojson-name">未选择文件</div>
+          </div>
+          <div class="tab-content" id="tab-light">
+            <div class="file-drop-zone" id="light-drop-zone">
+              <div class="drop-icon">🧾</div>
+              <div class="drop-text">点击或拖拽轻量格式文件</div>
+              <div class="drop-hint">支持 .csv, .wkt, .kml, .gpx</div>
+              <input type="file" id="light-input" accept=".csv,.wkt,.kml,.gpx" />
+            </div>
+            <div class="file-name-display" id="light-name">未选择文件</div>
           </div>
           <div class="tab-content" id="tab-shp">
             <div class="shp-file-row">
@@ -92,6 +105,22 @@ export function createToolPanel(map, options = {}) {
             <label class="checkbox-label">
               <input type="radio" name="export-format" value="shp" />
               <span>SHP (ZIP)</span>
+            </label>
+            <label class="checkbox-label">
+              <input type="radio" name="export-format" value="csv" />
+              <span>CSV</span>
+            </label>
+            <label class="checkbox-label">
+              <input type="radio" name="export-format" value="wkt" />
+              <span>WKT</span>
+            </label>
+            <label class="checkbox-label">
+              <input type="radio" name="export-format" value="kml" />
+              <span>KML</span>
+            </label>
+            <label class="checkbox-label">
+              <input type="radio" name="export-format" value="gpx" />
+              <span>GPX</span>
             </label>
           </div>
           <label class="checkbox-label">
@@ -232,6 +261,9 @@ export function createToolPanel(map, options = {}) {
   const geojsonInput = container.querySelector("#geojson-input")
   const geojsonDropZone = container.querySelector("#geojson-drop-zone")
   const geojsonName = container.querySelector("#geojson-name")
+  const lightInput = container.querySelector("#light-input")
+  const lightDropZone = container.querySelector("#light-drop-zone")
+  const lightName = container.querySelector("#light-name")
   const shpInput = container.querySelector("#shp-file")
   const dbfInput = container.querySelector("#dbf-file")
   const shxInput = container.querySelector("#shx-file")
@@ -302,6 +334,29 @@ export function createToolPanel(map, options = {}) {
     }
   })
 
+  lightDropZone.addEventListener("click", () => lightInput.click())
+  lightDropZone.addEventListener("dragover", (e) => {
+    e.preventDefault()
+    lightDropZone.classList.add("drag-over")
+  })
+  lightDropZone.addEventListener("dragleave", () => {
+    lightDropZone.classList.remove("drag-over")
+  })
+  lightDropZone.addEventListener("drop", (e) => {
+    e.preventDefault()
+    lightDropZone.classList.remove("drag-over")
+    const file = e.dataTransfer.files[0]
+    if (file) {
+      handleLightFile(file)
+    }
+  })
+  lightInput.addEventListener("change", (e) => {
+    const file = e.target.files[0]
+    if (file) {
+      handleLightFile(file)
+    }
+  })
+
   function handleGeojsonFile(file) {
     if (!file.name.match(/\.(json|geojson)$/i)) {
       showStatus("请选择 GeoJSON 文件", "error")
@@ -317,6 +372,28 @@ export function createToolPanel(map, options = {}) {
         syncAnalysisPanel()
       } catch {
         showStatus("文件解析失败", "error")
+      }
+    }
+    reader.readAsText(file, "utf-8")
+  }
+
+  function handleLightFile(file) {
+    const ext = file.name.split(".").pop().toLowerCase()
+    if (!getLightweightFormats().includes(ext)) {
+      showStatus("请选择 CSV、WKT、KML 或 GPX 文件", "error")
+      return
+    }
+    lightName.textContent = file.name
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      try {
+        currentGeojson = readLightweightGeojson(e.target.result, ext)
+        showStatus(`已加载 ${currentGeojson.features.length} 个轻量格式要素`, "success")
+        syncExportButton()
+        syncAnalysisPanel()
+      } catch (err) {
+        console.error(err)
+        showStatus(`轻量格式解析失败: ${err.message}`, "error")
       }
     }
     reader.readAsText(file, "utf-8")
@@ -407,6 +484,11 @@ export function createToolPanel(map, options = {}) {
           showStatus("请先选择 GeoJSON 文件", "error")
           return
         }
+      } else if (selectedTab === "light") {
+        if (!currentGeojson) {
+          showStatus("请先选择轻量格式文件", "error")
+          return
+        }
       } else if (selectedTab === "shp") {
         const shpFile = shpInput.files[0]
         if (!shpFile) {
@@ -481,16 +563,16 @@ export function createToolPanel(map, options = {}) {
       const blob = new Blob([JSON.stringify(exportGeojson, null, 2)], {
         type: "application/json",
       })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement("a")
-      a.href = url
-      a.download = `${filename}.geojson`
-      a.click()
-      URL.revokeObjectURL(url)
+      downloadBlob(blob, `${filename}.geojson`)
       showStatus("GeoJSON 已导出", "success")
-    } else {
+    } else if (format === "shp") {
       downloadShapefile(exportGeojson, filename)
       showStatus("SHP 已导出", "success")
+    } else {
+      const content = writeLightweightGeojson(exportGeojson, format)
+      const blob = new Blob([content], { type: "text/plain;charset=utf-8" })
+      downloadBlob(blob, `${filename}.${format}`)
+      showStatus(`${format.toUpperCase()} 已导出`, "success")
     }
   })
 
@@ -691,6 +773,15 @@ export function createToolPanel(map, options = {}) {
   function showStatus(msg, type) {
     status.textContent = msg
     status.className = `tool-status show ${type}`
+  }
+
+  function downloadBlob(blob, filename) {
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = filename
+    a.click()
+    URL.revokeObjectURL(url)
   }
 
   function getExportGeojson() {
