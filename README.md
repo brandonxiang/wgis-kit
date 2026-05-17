@@ -21,27 +21,69 @@
 
 点击地图即可获取三种坐标系下的坐标值：
 
-| 坐标系 | 说明 | 使用场景 |
-|--------|------|----------|
-| **WGS84** | 真实坐标 (GPS/谷歌地球) | 国际通用坐标系 |
-| **GCJ-02** | 国测局坐标 (火星坐标) | 高德、腾讯地图 |
-| **BD-09** | 百度坐标系 | 百度地图 |
+| 坐标系     | 说明                    | 使用场景       |
+| ---------- | ----------------------- | -------------- |
+| **WGS84**  | 真实坐标 (GPS/谷歌地球) | 国际通用坐标系 |
+| **GCJ-02** | 国测局坐标 (火星坐标)   | 高德、腾讯地图 |
+| **BD-09**  | 百度坐标系              | 百度地图       |
 
 ### 🔄 坐标转换库 (`@wgis/kit`)
 
 提供常用坐标系之间的互相转换：
 
 ```javascript
-import { 
-  wgs84togcj02,  // WGS84 → GCJ-02
-  gcj02towgs84,  // GCJ-02 → WGS84
-  gcj02tobd09,   // GCJ-02 → BD-09
-  bd09togcj02    // BD-09 → GCJ-02
-} from '@wgis/kit'
+import {
+  wgs84togcj02, // WGS84 → GCJ-02
+  gcj02towgs84, // GCJ-02 → WGS84
+  gcj02tobd09, // GCJ-02 → BD-09
+  bd09togcj02, // BD-09 → GCJ-02
+} from "@wgis/kit"
 
 // 示例：WGS84 转 高德坐标
 const [lng, lat] = wgs84togcj02(114.785156, 26.332807)
 ```
+
+### 🧮 GeoJSON 工具函数 (`@wgis/kit`)
+
+参考 `geojson-python-utils` 的核心能力，提供常用 GeoJSON 几何计算函数：
+
+```javascript
+import {
+  area,
+  centroid,
+  linestringsIntersect,
+  pointDistance,
+  pointInPolygon,
+  simplify,
+} from "@wgis/kit"
+
+const polygon = {
+  type: "Polygon",
+  coordinates: [
+    [
+      [0, 0],
+      [10, 0],
+      [10, 10],
+      [0, 10],
+      [0, 0],
+    ],
+  ],
+}
+
+console.log(pointInPolygon({ type: "Point", coordinates: [5, 5] }, polygon))
+console.log(area(polygon))
+console.log(centroid(polygon))
+```
+
+当前包含：
+
+- `linestringsIntersect`：LineString 交点检测
+- `pointInPolygon` / `pointInMultiPolygon`：点面关系判断，支持 polygon holes
+- `drawCircle`：通过中心点和半径生成圆形 Polygon
+- `pointDistance` / `geometryWithinRadius`：球面距离和半径判断
+- `area` / `centroid` / `rectangleCentroid`：面积与中心点计算
+- `destinationPoint`：根据起点、方位角和距离计算目标点
+- `simplify`：Ramer-Douglas-Peucker 点数组简化
 
 ### 🌍 多源底图切换
 
