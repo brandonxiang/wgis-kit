@@ -9,7 +9,12 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  panelTargetId: {
+    type: String,
+    default: "",
+  },
 })
+const emit = defineEmits(["panel-collapse-change"])
 
 const mapProvider = inject(MAP_PROVIDE)
 let drawTool
@@ -46,7 +51,21 @@ onMounted(async () => {
   drawTool.container.style.bottom = "24px"
   mapContainer?.appendChild(drawTool.container)
 
-  toolPanel = createToolPanel(map, { drawTool })
+  const panelParent = props.panelTargetId ? document.getElementById(props.panelTargetId) : null
+  const invalidateMapSize = () => {
+    requestAnimationFrame(() => map.invalidateSize())
+    setTimeout(() => map.invalidateSize(), 220)
+  }
+
+  toolPanel = createToolPanel(map, {
+    drawTool,
+    parent: panelParent,
+    onCollapseChange(isCollapsed) {
+      emit("panel-collapse-change", isCollapsed)
+      invalidateMapSize()
+    },
+  })
+  requestAnimationFrame(() => map.invalidateSize())
 })
 
 onBeforeUnmount(() => {

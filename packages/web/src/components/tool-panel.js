@@ -18,11 +18,25 @@ import { readShapefileFromFiles, downloadShapefile } from "@wgis/kit"
 import { area, centroid } from "@wgis/kit"
 
 export function createToolPanel(map, options = {}) {
+  const expandedIcon = `
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M4 5.5A1.5 1.5 0 0 1 5.5 4h13A1.5 1.5 0 0 1 20 5.5v13a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5z" />
+      <path d="M9 4v16" />
+      <path d="m15 9-3 3 3 3" />
+    </svg>
+  `
+  const collapsedIcon = `
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M4 5.5A1.5 1.5 0 0 1 5.5 4h13A1.5 1.5 0 0 1 20 5.5v13a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5z" />
+      <path d="M9 4v16" />
+      <path d="m12 9 3 3-3 3" />
+    </svg>
+  `
   const container = L.DomUtil.create("div", "tool-panel")
   container.innerHTML = `
     <div class="tool-panel-header">
       <span>工具箱</span>
-      <button class="tool-toggle-btn" type="button" aria-label="折叠工具箱" aria-expanded="true">−</button>
+      <button class="tool-toggle-btn" type="button" aria-label="折叠工具箱" aria-expanded="true">${expandedIcon}</button>
     </div>
     <div class="tool-panel-content">
       <div class="tool-group">
@@ -234,7 +248,8 @@ export function createToolPanel(map, options = {}) {
     </div>
   `
 
-  document.body.appendChild(container)
+  const panelParent = options.parent || document.body
+  panelParent.appendChild(container)
 
   L.DomEvent.disableClickPropagation(container)
   L.DomEvent.disableScrollPropagation(container)
@@ -244,8 +259,10 @@ export function createToolPanel(map, options = {}) {
   toggleBtn.addEventListener("click", () => {
     const isCollapsed = container.classList.toggle("collapsed")
     panelContent.hidden = isCollapsed
-    toggleBtn.textContent = isCollapsed ? "+" : "−"
+    toggleBtn.innerHTML = isCollapsed ? collapsedIcon : expandedIcon
+    toggleBtn.setAttribute("aria-label", isCollapsed ? "展开工具箱" : "折叠工具箱")
     toggleBtn.setAttribute("aria-expanded", String(!isCollapsed))
+    options.onCollapseChange?.(isCollapsed)
   })
 
   const tabBtns = container.querySelectorAll(".tab-btn")

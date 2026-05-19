@@ -23,10 +23,10 @@
       }
 
       .tool-panel {
-        position: absolute;
+        position: relative;
         top: 0;
         right: 0;
-        width: 300px;
+        width: 100%;
         height: 100%;
         background: white;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
@@ -39,7 +39,7 @@
       }
 
       .tool-panel.collapsed {
-        width: 116px;
+        width: 100%;
         height: auto;
         border-radius: 0 0 0 8px;
         overflow: hidden;
@@ -57,18 +57,32 @@
       }
 
       .tool-toggle-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
         background: rgba(255, 255, 255, 0.2);
         border: none;
         color: white;
-        font-size: 18px;
         cursor: pointer;
-        padding: 2px 8px;
+        padding: 0;
         border-radius: 4px;
         transition: background 0.2s;
       }
 
       .tool-toggle-btn:hover {
         background: rgba(255, 255, 255, 0.3);
+      }
+
+      .tool-toggle-btn svg {
+        width: 20px;
+        height: 20px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
       }
 
       .tool-panel-content {
