@@ -15,6 +15,7 @@ const selectedLayer = computed(
   () =>
     tileLayerConfigs.find((layer) => layer.key === selectedLayerKey.value) || tileLayerConfigs[0],
 )
+const selectedLayerTiles = computed(() => selectedLayer.value.layers || [selectedLayer.value])
 </script>
 
 <template>
@@ -22,9 +23,10 @@ const selectedLayer = computed(
     <div class="map-area">
       <LMap id="map" class="map-root" :options="mapOptions">
         <LTileLayer
-          :key="selectedLayer.key"
-          :url-template="selectedLayer.urlTemplate"
-          :options="selectedLayer.options"
+          v-for="(tileLayer, index) in selectedLayerTiles"
+          :key="`${selectedLayer.key}-${index}`"
+          :url-template="tileLayer.urlTemplate"
+          :options="tileLayer.options"
         />
         <MapTools
           map-id="map"

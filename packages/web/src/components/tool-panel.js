@@ -45,9 +45,9 @@ export function createToolPanel(map, options = {}) {
           <div class="tool-section-title">📁 文件导入</div>
           <div class="tool-tabs">
             <button class="tab-btn active" data-tab="geojson">GeoJSON</button>
-            <button class="tab-btn" data-tab="light">轻量</button>
             <button class="tab-btn" data-tab="shp">SHP</button>
             <button class="tab-btn" data-tab="cad">CAD</button>
+            <button class="tab-btn" data-tab="light">其他</button>
           </div>
           <div class="tab-content active" id="tab-geojson">
             <div class="file-drop-zone" id="geojson-drop-zone">
