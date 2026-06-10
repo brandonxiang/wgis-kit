@@ -2,6 +2,9 @@
   "name": "wgis-kit",
   "version": "1.0.0",
   "description": "",
+  "keywords": [],
+  "license": "MIT",
+  "author": "",
   "main": "index.js",
   "scripts": {
     "dev": "pnpm --filter @wgis/web run dev",
@@ -10,11 +13,9 @@
     "format": "vp fmt packages/",
     "lint:fix": "vp lint packages/ --fix",
     "format:fix": "vp fmt packages/ --write",
+    "ts-check": "pnpm --filter @wgis/kit run ts-check",
     "prepare": "vp config"
   },
-  "keywords": [],
-  "author": "",
-  "license": "MIT",
   "devDependencies": {
     "vite-plus": "catalog:"
   },

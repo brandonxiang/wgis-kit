@@ -2,29 +2,31 @@
   "name": "@wgis/kit",
   "version": "1.0.0",
   "type": "module",
+  "types": "./types/index.d.ts",
   "exports": {
     "import": "./src/index.js",
     "types": "./types/index.d.ts"
   },
-  "types": "./types/index.d.ts",
   "scripts": {
     "test": "vp test",
     "test:run": "vp test run",
     "test:coverage": "vp test run --coverage",
     "tsd": "tsc --emitDeclarationOnly",
+    "ts-check": "tsc --noEmit",
     "lint": "vp lint src/",
     "format": "vp fmt src/",
     "lint:fix": "vp lint src/ --fix",
     "format:fix": "vp fmt src/ --write"
   },
-  "devDependencies": {
-    "typescript": "^5.9.3",
-    "vitest": "catalog:",
-    "vite-plus": "catalog:"
-  },
   "dependencies": {
     "dxf": "^5.3.1",
     "shapefile": "^0.6.6",
     "shp-write": "^0.3.2"
+  },
+  "devDependencies": {
+    "@types/geojson": "^7946.0.16",
+    "typescript": "^5.9.3",
+    "vite-plus": "catalog:",
+    "vitest": "catalog:"
   }
 }
